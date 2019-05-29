@@ -2,6 +2,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_20newsgroups
+from sklearn.manifold import TSNE
+from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
 
 dataset = fetch_20newsgroups(shuffle=True, random_state=1, remove=('headers', 'footers', 'quotes'))
 documents = dataset.data
@@ -17,7 +21,6 @@ news_df['clean_doc'] = news_df['clean_doc'].apply(lambda x: ' '.join([w for w in
 
 # make all text lowercase
 news_df['clean_doc'] = news_df['clean_doc'].apply(lambda x: x.lower())
-from nltk.corpus import stopwords
 stop_words = stopwords.words('english')
 
 # tokenization
@@ -33,7 +36,6 @@ for i in range(len(news_df)):
     detokenized_doc.append(t)
     
 news_df['clean_doc'] = detokenized_doc
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 vectorizer = TfidfVectorizer(stop_words='english', 
                              max_features= 1000, # keep top 1000 terms 
@@ -43,8 +45,7 @@ vectorizer = TfidfVectorizer(stop_words='english',
 X = vectorizer.fit_transform(news_df['clean_doc'])
 
 X.shape # check shape of the document-term matrix
-
-from sklearn.decomposition import TruncatedSVD
+X = X[:10000, :]
 
 # SVD represent documents and terms in vectors 
 svd_model = TruncatedSVD(n_components=20, algorithm='randomized', n_iter=100, random_state=122)
@@ -63,10 +64,8 @@ for i, comp in enumerate(svd_model.components_):
         print(t[0])
     print(" ")
 
-import umap
-
 X_topics = svd_model.fit_transform(X)
-embedding = umap.UMAP(n_neighbors=150, min_dist=0.5, random_state=12).fit_transform(X_topics)
+embedding = TSNE().fit_transform(X_topics)
 
 plt.figure(figsize=(7,5))
 plt.scatter(embedding[:, 0], embedding[:, 1],  

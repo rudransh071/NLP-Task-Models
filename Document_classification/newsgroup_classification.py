@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.naive_bayes import MultinomialNB
 
 my_path = '20_newsgroups'
 
@@ -247,7 +248,6 @@ Y_test = np.asarray(Y_test)
 len(X_test)
 len(Y_test)
 
-from sklearn.naive_bayes import MultinomialNB
 clf = MultinomialNB()
 clf.fit(X_train, Y_train)
 

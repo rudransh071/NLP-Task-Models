@@ -18,7 +18,6 @@ clusters = km.labels_.tolist()
 
 joblib.dump(km,  'doc_cluster.pkl')
 km = joblib.load('doc_cluster.pkl')
-clusters = km.labels_.tolist()
 
 films = { 'title': titles, 'rank': ranks, 'synopsis': synopses, 'cluster': clusters, 'genre': genres }
 
